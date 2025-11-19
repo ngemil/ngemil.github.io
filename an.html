@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ngemil Mart - Cemilan & Sembako Gen Z</title>
+  <meta name="description" content="Risoles lumer, keripik pedas, beras premium, minyak goreng — order cepat via WA!">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Ngemil Mart - Cemilan & Sembako Gen Z">
+  <meta property="og:description" content="Cemilan enak + sembako murah. Langsung checkout via WA!">
+  <meta property="og:image" content="https://ngemil.github.io/preview.jpg">
+  <meta property="og:url" content="https://ngemil.github.io">
+  <meta property="og:type" content="website">
+
+  <!-- PWA -->
+  <link rel="manifest" href="data:application/manifest+json,{
+    \"name\":\"Ngemil Mart\",
+    \"short_name\":\"Ngemil\",
+    \"start_url\":\".\",
+    \"display\":\"standalone\",
+    \"background_color\":\"#0EA5E9\",
+    \"theme_color\":\"#0EA5E9\",
+    \"icons\":[{\"src\":\"https://ngemil.github.io/icon-192.png\",\"sizes\":\"192x192\",\"type\":\"image/png\"},{\"src\":\"https://ngemil.github.io/icon-512.png\",\"sizes\":\"512x512\",\"type\":\"image/png\"}]
+  }">
+  <meta name="theme-color" content="#0EA5E9">
+
+  <!-- Font & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Fredoka+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #0EA5E9; --secondary: #38BDF8; --accent: #10B981; --danger: #EF4444;
+      --dark: #1E293B; --light: #F0F9FF; --gray: #64748B; --radius: 22px;
+      --shadow: 0 14px 40px rgba(14,165,233,0.2); --transition: all 0.4s ease;
+    }
+    [data-theme="dark"] { --light: #0F172A; --dark: #E2E8F0; --gray: #94A3B8; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: 'Poppins', sans-serif; background: var(--light); color: var(--dark); line-height: 1.7; opacity:0; transition: var(--transition); }
+    body.loaded { opacity:1; }
+    .container { max-width: 1320px; margin: 0 auto; padding: 0 20px; }
+
+    /* Header, Hero, Kategori, Produk … (tetap sama seperti kode awal) */
+    header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 20px 0; position: sticky; top: 0; z-index: 1200; box-shadow: 0 8px 30px rgba(14,165,233,0.35); }
+    .header-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .logo { font-family: 'Fredoka One', cursive; font-size: 2.5em; text-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+    /* ... (style lainnya tetap sama) ... */
+
+    /* === PRICING SECTION (baru) === */
+    .pricing { padding: 100px 0; background: white; }
+    .pricing-title { text-align: center; font-size: 3em; margin-bottom: 70px; color: var(--primary); position: relative; }
+    .pricing-title::after { content: ''; width: 140px; height: 7px; background: var(--secondary); display: block; margin: 25px auto; border-radius: 4px; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; }
+    .price-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: var(--transition); }
+    .price-card:hover { transform: translateY(-20px); box-shadow: 0 30px 60px rgba(14,165,233,0.35); }
+    .price-header { padding: 40px 30px 30px; text-align: center; }
+    .price-header h3 { font-size: 1.8em; margin-bottom: 10px; }
+    .price-header p { color: var(--gray); margin-bottom: 20px; }
+    .price { font-size: 3.5em; font-weight: 800; color: var(--primary); }
+    .price span { font-size: 0.4em; font-weight: normal; color: var(--gray); }
+    .price-btn { display: block; margin: 30px auto 0; padding: 16px 40px; background: var(--primary); color: white; border: none; border-radius: 16px; font-weight: 700; cursor: pointer; transition: var(--transition); }
+    .price-btn:hover { background: var(--secondary); transform: scale(1.05); }
+    .price-features { padding: padding: 0 30px 40px; }
+    .price-features ul { list-style: none; }
+    .price-features li { padding: 12px 0; display: flex; align-items: center; gap: 12px; }
+    .price-features .check { color: var(--accent); font-size: 1.4em; }
+    .price-features .cross { color: var(--danger); font-size: 1.4em; }
+
+    @media (max-width: 768px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER, HERO, KATEGORI, PRODUK … (tetap sama seperti kode awalmu) -->
+  <!-- ... (semua kode sampai </section> produk tetap utuh) ... -->
+
+  <!-- === SECTION PRICING YANG BARU DITAMBAHKAN === -->
+  <section class="pricing">
+    <div class="container">
+      <h2 class="pricing-title">Pilih Paket Membership</h2>
+      <div class="pricing-grid">
+
+        <!-- Starter -->
+        <div class="price-card">
+          <div class="price-header">
+            <h3>Starter</h3>
+            <p>Cocok untuk pemula yang baru memulai.</p>
+            <div class="price">Rp 200.000<span>/bulan</span></div>
+            <button class="price-btn" onclick="checkoutMembership('Starter - Rp 200.000/bulan')">Pilih Paket</button>
+          </div>
+          <div class="price-features">
+            <ul>
+              <li><i class="fas fa-check check"></i>10 users</li>
+              <li><i class="fas fa-check check"></i>2 GB penyimpanan</li>
+              <li><i class="fas fa-check check"></i>Support email</li>
+              <li><i class="fas fa-times cross"></i>Akses help center</li>
+              <li><i class="fas fa-times cross"></i></i>Support telepon</li>
+              <li><i class="fas fa-times cross"></i>Komunitas eksklusif</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Pro (highlight) -->
+        <div class="price-card" style="transform: scale(1.08); z-index: 10;">
+          <div class="price-header" style="background: linear-gradient(135deg,var(--primary),var(--secondary)); color:white;">
+            <h3>Pro</h3>
+            <p>Untuk yang sering belanja & ingin diskon lebih banyak.</p>
+            <div class="price">Rp 300.000<span>/bulan</span></div>
+            <button class="price-btn" style="background:white; color:var(--primary);" onclick="checkoutMembership('Pro - Rp 300.000/bulan')">Pilih Paket</button>
+          </div>
+          <div class="price-features">
+            <ul>
+              <li><i class="fas fa-check check"></i>20 users</li>
+              <li><i class="fas fa-check check"></i>5 GB penyimpanan</li>
+              <li><i class="fas fa-check check"></i>Support email 24/7</li>
+              <li><i class="fas fa-check check"></i>Akses help center</li>
+              <li><i class="fas fa-times cross"></i>Support telepon</li>
+              <li><i class="fas fa-times cross"></i>Komunitas VIP</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="price-card">
+          <div class="price-header">
+            <h3>Enterprise</h3>
+            <p>Untuk reseller / toko besar.</p>
+            <div class="price">Rp 1.000.000<span>/bulan</span></div>
+            <button class="price-btn" onclick="checkoutMembership('Enterprise - Rp 1.000.000/bulan')">Pilih Paket</button>
+          </div>
+          <div class="price-features">
+            <ul>
+              <li><i class="fas fa-check check"></i>50 users</li>
+              <li><i class="fas fa-check check"></i>20 GB penyimpanan</li>
+              <li><i class="fas fa-check check"></i>Support email & telepon</li>
+              <li><i class="fas fa-check check"></i>Akses help center</li>
+              <li><i class="fas fa-check check"></i>Support prioritas</li>
+              <li><i class="fas fa-check check"></i>Komunitas eksklusif + training</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- KERANJANG SIDEBAR, TOAST, FOOTER … (tetap sama) -->
+
+  <script>
+    // ... semua script yang sudah ada tetap utuh ...
+
+    // Fungsi baru untuk checkout membership via WA
+    function checkoutMembership(paket) {
+      const msg = `*Pemesanan Membership Ngemil Mart*%0a%0aPaket: ${paket}%0a%0aTerima kasih sudah memilih kami! Kami akan segera menghubungi Anda.`;
+      window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+      confetti({ particleCount: 200, spread: 100 });
+    }
+
+    // sisanya script tetap sama
+  </script>
+</body>
+</html>
