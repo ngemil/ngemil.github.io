@@ -6,20 +6,20 @@
   <title>ProfitMart — Marketplace Gen-Z 2025</title>
   <meta name="description" content="Belanja cemilan, gadget, fashion, sembako — semua murah & cepat via WA!" />
 
-  <!-- Tailwind CSS v3 (lebih ringan & update) -->
+  <!-- Tailwind Play CDN (paling stabil & cepat) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
-          fontFamily: { 'pop': ['Poppins', 'sans-serif'], 'fred': ['Fredoka One', 'cursive'] },
+          fontFamily: { pop: ['Poppins', 'sans-serif'], fred: ['Fredoka One', 'cursive'] },
           colors: { primary: '#0EA5E9', accent: '#10B981', danger: '#EF4444' }
         }
       }
     }
   </script>
 
-  <!-- Icons & Confetti -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 </head>
@@ -40,10 +40,10 @@
       </div>
 
       <div class="flex items-center gap-6">
-        <button id="themeToggle" class="text-2xl"><i class="fas fa-moon"></i></button>
-        <button onclick="toggleCart()" class="relative text-2xl">
+        <button id="themeToggle" class="text-2xl hover:scale-110 transition"><i class="fas fa-moon"></i></button>
+        <button onclick="toggleCart()" class="relative text-2xl hover:scale-110 transition">
           <i class="fas fa-shopping-cart"></i>
-          <span id="cartCount" class="absolute -top-3 -right-3 bg-danger text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">0</span>
+          <span id="cartCount" class="absolute -top-3 -right-3 bg-danger text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold animate-pulse">0</span>
         </button>
       </div>
     </div>
@@ -69,40 +69,40 @@
 
     <!-- GRID PRODUK -->
     <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-      <!-- Produk diisi oleh JS -->
+      <!-- Produk diisi JS -->
     </div>
   </section>
 
   <!-- KERANJANG SIDEBAR -->
-  <div id="cartSidebar" class="fixed right-0 top-0 h-full w-full max-w-md bg-white dark:bg-slate-800 shadow-2xl transform translate-x-full transition-transform duration-500 z-50 overflow-y-auto">
-    <div class="p-6 border-b dark:border-gray-700">
-      <div class="flex justify-between items-center">
+  <div id="cartSidebar" class="fixed inset-0 z-50 bg-black/50 hidden" onclick="if(event.target===this) toggleCart()">
+    <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white dark:bg-slate-800 shadow-2xl transform translate-x-full transition-transform duration-500" id="cartPanel">
+      <div class="p-6 border-b dark:border-gray-700 flex justify-between items-center">
         <h3 class="text-2xl font-bold">Keranjang (<span id="cartTotalItems">0</span>)</h3>
-        <button onclick="toggleCart()" class="text-3xl"><i class="fas fa-times"></i></button>
+        <button onclick="toggleCart()" class="text-3xl hover:text-danger transition"><i class="fas fa-times"></i></button>
       </div>
-    </div>
 
-    <div id="cartItems" class="p-6 space-y-4">
-      <p class="text-center text-gray-500 py-20">Keranjang kosong</p>
-    </div>
-
-    <div class="p-6 border-t dark:border-gray-700">
-      <div class="flex justify-between text-2xl font-bold mb-6">
-        <span>Total</span>
-        <span class="text-primary">Rp <span id="cartTotalPrice">0</span></span>
+      <div id="cartItems" class="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+        <p class="text-center text-gray-500 py-20">Keranjang kosong 😢</p>
       </div>
-      <button onclick="checkout()" class="w-full py-5 bg-accent text-white text-xl font-bold rounded-xl hover:bg-green-600 transition flex items-center justify-center gap-3">
-        <i class="fab fa-whatsapp text-3xl"></i> Checkout via WhatsApp
-      </button>
+
+      <div class="p-6 border-t dark:border-gray-700">
+        <div class="flex justify-between text-2xl font-bold mb-6 text-primary">
+          <span>Total</span>
+          <span>Rp <span id="cartTotalPrice">0</span></span>
+        </div>
+        <button onclick="checkout()" class="w-full py-5 bg-accent text-white text-xl font-bold rounded-xl hover:bg-green-600 transition flex items-center justify-center gap-3">
+          <i class="fab fa-whatsapp text-3xl"></i> Checkout via WhatsApp
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- TOAST -->
-  <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-accent text-white px-8 py-4 rounded-full shadow-2xl opacity-0 transition-all duration-500 z-50 text-lg font-bold">
-    Ditambahkan ke keranjang!
+  <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-accent text-white px-8 py-4 rounded-full shadow-2xl opacity-0 transition-all z-50 text-lg font-bold pointer-events-none">
+    Ditambahkan ke keranjang! 🎉
   </div>
 
-  <!-- DATA PRODUK -->
+  <!-- SCRIPT FIX 100% -->
   <script>
     const products = [
       { id: 1, name: "Risoles Lumer Mozzarella", price: 18000, category: "cemilan", rating: 4.9, sold: 532, img: "https://images.unsplash.com/photo-1606890658317-7ff038f79e73?w=500" },
@@ -111,28 +111,35 @@
       { id: 4, name: "Beras Premium 5kg", price: 68000, category: "sembako", rating: 5.0, sold: 2100, img: "https://images.unsplash.com/photo-1586201375761-83865001bdd6?w=500" },
       { id: 5, name: "Keripik Balado Level 20", price: 15000, category: "cemilan", rating: 4.9, sold: 3400, img: "https://images.unsplash.com/photo-1624353365286-3b689189b3f3?w=500" },
       { id: 6, name: "Hoodie Zipper Korean Style", price: 179000, category: "fashion", rating: 4.9, sold: 780, img: "https://images.unsplash.com/photo-1556821845-9c6e4d1c27c1?w=500" },
+      { id: 7, name: "Earphone TWS Bluetooth 5.3", price: 249000, category: "gadget", rating: 4.8, sold: 1500, img: "https://images.unsplash.com/photo-1606220588913-b4747d92b5db?w=500" },
+      { id: 8, name: "Minyak Goreng 2 Liter", price: 35000, category: "sembako", rating: 4.7, sold: 3200, img: "https://images.unsplash.com/photo-1621939514643-280e5c90473c?w=500" },
     ];
 
     let cart = JSON.parse(localStorage.getItem('profitmart_cart')) || [];
-    const waNumber = "6281234567890"; // GANTI DENGAN NOMOR KAMU
+    const waNumber = "6281234567890"; // ← GANTI NOMOR WA KAMU DI SINI
 
-    function renderProducts(filter = '') {
-      const filtered = filter ? products.filter(p => p.category === filter) : products;
-      document.getElementById('productGrid').innerHTML = filtered.map(p => `
+    // Fungsi render produk (dipakai ulang untuk filter & search)
+    function render(productsToShow) {
+      const grid = document.getElementById('productGrid');
+      if (productsToShow.length === 0) {
+        grid.innerHTML = `<p class="col-span-full text-center text-2xl text-gray-500 py-20">Produk tidak ditemukan 😔</p>`;
+        return;
+      }
+      grid.innerHTML = productsToShow.map(p => `
         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group">
           <div class="relative overflow-hidden">
             <img src="${p.img}" alt="${p.name}" class="w-full h-64 object-cover group-hover:scale-110 transition duration-500">
             <div class="absolute top-3 left-3 bg-danger text-white px-3 py-1 rounded-full text-xs font-bold">Terlaris</div>
           </div>
           <div class="p-5">
-            <h3 class="font-bold text-lg mb-2">${p.name}</h3>
+            <h3 class="font-bold text-lg mb-2 line-clamp-2">${p.name}</h3>
             <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-3">
               <span class="text-yellow-500">★ ${p.rating}</span>
               <span>• Terjual ${p.sold}+</span>
             </div>
             <div class="flex items-center justify-between">
               <span class="text-2xl font-bold text-primary">Rp ${p.price.toLocaleString('id-ID')}</span>
-              <button onclick="addToCart(${p.id})" class="bg-primary text-white p-4 rounded-full hover:bg-blue-700 transition shadow-lg">
+              <button onclick="addToCart(${p.id})" class="bg-primary text-white p-4 rounded-full hover:bg-blue-700 transition shadow-lg hover:scale-110">
                 <i class="fas fa-plus"></i>
               </button>
             </div>
@@ -141,6 +148,7 @@
       `).join('');
     }
 
+    // Tambah ke keranjang
     function addToCart(id) {
       const product = products.find(p => p.id === id);
       const existing = cart.find(i => i.id === id);
@@ -148,14 +156,15 @@
       else cart.push({ ...product, qty: 1 });
       localStorage.setItem('profitmart_cart', JSON.stringify(cart));
       updateCart();
-      showToast(`${product.name} ditambahkan!`);
+      showToast(`${product.name} ditambahkan! 🎉`);
       confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
     }
 
+    // Update keranjang UI
     function updateCart() {
       const totalItems = cart.reduce((a, i) => a + i.qty, 0);
       const totalPrice = cart.reduce((a, i) => a + i.price * i.qty, 0);
-      document.getElementById('cartCount').textContent = totalItems;
+      document.getElementById('cartCount').textContent = totalItems || '0';
       document.getElementById('cartTotalItems').textContent = totalItems;
       document.getElementById('cartTotalPrice').textContent = totalPrice.toLocaleString('id-ID');
 
@@ -163,26 +172,28 @@
         <div class="flex gap-4 bg-gray-50 dark:bg-slate-700 p-4 rounded-xl">
           <img src="${i.img}" class="w-20 h-20 object-cover rounded-lg">
           <div class="flex-1">
-            <h4 class="font-semibold">${i.name}</h4>
+            <h4 class="font-semibold text-sm">${i.name}</h4>
             <p class="text-primary font-bold">Rp ${(i.price * i.qty).toLocaleString('id-ID')}</p>
             <div class="flex items-center gap-3 mt-2">
-              <button onclick="changeQty(${i.id}, -1)" class="w-9 h-9 rounded-full border border-gray-400 hover:bg-gray-200">-</button>
+              <button onclick="changeQty(${i.id}, -1)" class="w-9 h-9 rounded-full border hover:bg-gray-200">-</button>
               <span class="font-bold w-8 text-center">${i.qty}</span>
               <button onclick="changeQty(${i.id}, 1)" class="w-9 h-9 rounded-full bg-primary text-white hover:bg-blue-700">+</button>
             </div>
           </div>
-          <button onclick="removeFromCart(${i.id})" class="text-danger"><i class="fas fa-trash"></i></button>
+          <button onclick="removeFromCart(${i.id})" class="text-danger hover:scale-110"><i class="fas fa-trash"></i></button>
         </div>
-      `).join('') : '<p class="text-center text-gray-500 py-20">Keranjang kosong</p>';
+      `).join('') : '<p class="text-center text-gray-500 py-20">Keranjang kosong 😢</p>';
     }
 
     function changeQty(id, delta) {
       const item = cart.find(i => i.id === id);
       if (item) {
-        item.qty = Math.max(1, item.qty + delta);
-        if (item.qty === 0) cart = cart.filter(i => i.id !== id);
-        localStorage.setItem('profitmart_cart', JSON.stringify(cart));
-        updateCart();
+        item.qty += delta;
+        if (item.qty <= 0) removeFromCart(id);
+        else {
+          localStorage.setItem('profitmart_cart', JSON.stringify(cart));
+          updateCart();
+        }
       }
     }
 
@@ -190,40 +201,43 @@
       cart = cart.filter(i => i.id !== id);
       localStorage.setItem('profitmart_cart', JSON.stringify(cart));
       updateCart();
+      showToast("Produk dihapus dari keranjang");
     }
 
     function toggleCart() {
-      document.getElementById('cartSidebar').classList.toggle('translate-x-0');
-      document.getElementById('cartSidebar').classList.toggle('translate-x-full');
+      const overlay = document.getElementById('cartSidebar');
+      const panel = document.getElementById('cartPanel');
+      overlay.classList.toggle('hidden');
+      panel.classList.toggle('translate-x-full');
     }
 
     function checkout() {
       if (!cart.length) return showToast("Keranjang kosong!");
       let msg = "*Pesanan dari ProfitMart*%0a%0a";
       cart.forEach(i => msg += `• ${i.name} × ${i.qty} = Rp ${(i.price*i.qty).toLocaleString('id-ID')}%0a`);
-      msg += `%0a*Total: Rp ${cart.reduce((a,i)=>a+(i.price*i.qty),0).toLocaleString('id-ID')}*%0aTerima kasih!`;
+      msg += `%0a*Total: Rp ${cart.reduce((a,i)=>a+(i.price*i.qty),0).toLocaleString('id-ID')}*%0aTerima kasih sudah belanja! 🚀`;
       window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
-      confetti({ particleCount: 300, spread: 100 });
+      confetti({ particleCount: 300, spread: 120, origin: { y: 0.5 } });
     }
 
     function showToast(text) {
       const t = document.getElementById('toast');
       t.textContent = text;
-      t.classList.remove('opacity-0', 'bottom-8');
-      t.classList.add('opacity-100', 'bottom-12');
-      setTimeout(() => {
-        t.classList.add('opacity-0', 'bottom-8');
-      }, 3000);
+      t.classList.remove('opacity-0');
+      t.classList.add('opacity-100');
+      setTimeout(() => t.classList.add('opacity-0'), 3000);
     }
 
-    function filterCategory(cat) { renderProducts(cat); }
+    function filterCategory(cat) {
+      const filtered = cat ? products.filter(p => p.category === cat) : products;
+      render(filtered);
+    }
 
-    // Search
+    // SEARCH YANG SUDAH DI-FIX
     document.getElementById('searchInput').addEventListener('input', function() {
-      const query = this.value.toLowerCase();
+      const query = this.value.toLowerCase().trim();
       const filtered = products.filter(p => p.name.toLowerCase().includes(query));
-      document.getElementById('productGrid').innerHTML = filtered.map(p => /* sama seperti renderProducts */).join('');
-      // (kode render sama seperti di atas, bisa di-refactor jadi satu fungsi)
+      render(filtered);
     });
 
     // Dark mode
@@ -233,9 +247,9 @@
       localStorage.setItem('theme', isDark ? 'light' : 'dark');
     });
 
-    // Init
+    // INIT
     window.onload = () => {
-      renderProducts();
+      render(products);        // ← Pasti muncul produk saat buka
       updateCart();
       if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
     };
