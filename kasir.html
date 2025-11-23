@@ -937,8 +937,11 @@
             <div class="modal-amount" id="successTotal">Rp 0</div>
             <div class="change-amount" id="successChange"></div>
             <div class="modal-actions">
-                <button class="modal-btn primary" onclick="printReceipt()" style="flex: 2;">
-                    <i class="fas fa-print"></i> Cetak Struk
+                <button class="modal-btn primary" onclick="sendToWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> Kirim ke WA
+                </button>
+                <button class="modal-btn primary" onclick="printReceipt()">
+                    <i class="fas fa-print"></i> Cetak
                 </button>
                 <button class="modal-btn secondary" onclick="closeSuccessModal()">Tutup</button>
             </div>
@@ -972,6 +975,7 @@
         let discountPercent = 0;
         let selectedPaymentMethod = 'cash';
         let lastTransaction = null;
+        const waNumber = "628999587888"; // Nomor WhatsApp tujuan
 
         // Render Products
         function renderProducts(filter = '') {
@@ -1160,7 +1164,7 @@
             // Generate quick amount buttons
             const quickAmounts = document.getElementById('quickAmounts');
             const amounts = [
-                Math.ceil(total / 1000) * 1000, // Rounded up to nearest 1000
+                Math.ceil(total / 1000) * 1000,
                 50000,
                 100000,
                 200000,
@@ -1236,7 +1240,7 @@
                 cashier: document.getElementById('cashierName').textContent
             };
 
-            // Update stock (in real app, this would be sent to backend)
+            // Update stock
             cart.forEach(item => {
                 const product = products.find(p => p.id === item.id);
                 if (product) product.stock -= item.qty;
@@ -1258,7 +1262,7 @@
             discountPercent = 0;
             document.getElementById('discountInput').value = '';
             updateCart();
-            renderProducts(); // Update stock display
+            renderProducts();
         }
 
         // Show Success Modal
@@ -1282,6 +1286,47 @@
         // Close Success Modal
         function closeSuccessModal() {
             document.getElementById('successModal').classList.remove('show');
+        }
+
+        // Send to WhatsApp
+        function sendToWhatsApp() {
+            if (!lastTransaction) return;
+
+            // Format message untuk WhatsApp
+            let message = `*🧾 STRUK PEMBAYARAN NGEMIL MART*%0a`;
+            message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━%0a%0a`;
+            message += `📅 *Tanggal:* ${lastTransaction.date.toLocaleString('id-ID')}%0a`;
+            message += `👤 *Kasir:* ${lastTransaction.cashier}%0a`;
+            message += `💳 *Metode:* ${lastTransaction.method.toUpperCase()}%0a`;
+            message += `%0a━━━━━━━━━━━━━━━━━━━━━━━━━━━━%0a`;
+            message += `*DETAIL PEMBELIAN:*%0a%0a`;
+
+            lastTransaction.items.forEach((item, index) => {
+                message += `${index + 1}. *${item.name}*%0a`;
+                message += `   ${item.qty} × Rp ${item.price.toLocaleString('id-ID')} = *Rp ${(item.qty * item.price).toLocaleString('id-ID')}*%0a%0a`;
+            });
+
+            message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━%0a`;
+            message += `Subtotal: Rp ${lastTransaction.subtotal.toLocaleString('id-ID')}%0a`;
+
+            if (lastTransaction.discount > 0) {
+                message += `Diskon: -Rp ${lastTransaction.discount.toLocaleString('id-ID')}%0a`;
+            }
+
+            message += `%0a*💰 TOTAL: Rp ${lastTransaction.total.toLocaleString('id-ID')}*%0a`;
+
+            if (lastTransaction.method === 'cash') {
+                message += `%0aTunai: Rp ${lastTransaction.cash.toLocaleString('id-ID')}%0a`;
+                message += `Kembali: Rp ${lastTransaction.change.toLocaleString('id-ID')}%0a`;
+            }
+
+            message += `%0a━━━━━━━━━━━━━━━━━━━━━━━━━━━━%0a`;
+            message += `✨ *Terima kasih atas kunjungan Anda!* ✨%0a`;
+            message += `%0a_Ngemil Mart - Cemilan & Sembako Gen Z_`;
+
+            // Open WhatsApp
+            window.open(`https://wa.me/${waNumber}?text=${message}`, '_blank');
+            showToast('Membuka WhatsApp...');
         }
 
         // Print Receipt
@@ -1315,10 +1360,8 @@ Kembali: Rp ${lastTransaction.change.toLocaleString('id-ID')}
 ========================================
       `;
 
-            // In real app, this would send to printer
             console.log(receipt);
             alert('Struk akan dicetak!\n\n' + receipt);
-
             closeSuccessModal();
         }
 
@@ -1360,7 +1403,7 @@ Kembali: Rp ${lastTransaction.change.toLocaleString('id-ID')}
                 document.getElementById('themeToggle').querySelector('i').classList.add('fa-sun');
             }
 
-            // Set cashier name from localStorage or prompt
+            // Set cashier name
             let cashierName = localStorage.getItem('cashierName');
             if (!cashierName) {
                 cashierName = prompt('Masukkan nama kasir:', 'Kasir 1') || 'Kasir 1';
@@ -1371,24 +1414,20 @@ Kembali: Rp ${lastTransaction.change.toLocaleString('id-ID')}
 
         // Keyboard shortcuts
         document.addEventListener('keydown', function (e) {
-            // F1 - Focus search
             if (e.key === 'F1') {
                 e.preventDefault();
                 document.getElementById('searchInput').focus();
             }
-            // F2 - Clear cart
             if (e.key === 'F2') {
                 e.preventDefault();
                 clearCart();
             }
-            // F3 - Checkout
             if (e.key === 'F3') {
                 e.preventDefault();
                 if (!document.getElementById('checkoutBtn').disabled) {
                     openPaymentModal();
                 }
             }
-            // ESC - Close modals
             if (e.key === 'Escape') {
                 closePaymentModal();
                 closeSuccessModal();
